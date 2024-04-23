@@ -178,30 +178,28 @@ string safeRemove(Buffer &buffer)
 // The thread in this stage recurses through the current directory and adds filenames to the first buffer
 void filename_acquisition_thread()
 {
-    // Get the current working directory
-    fs::path current_path = fs::current_path();
+	// Get the current working directory
+	fs::path current_path = fs::current_path();
 
-    // Recursively iterate over all the files in the current directory and its subdirectories
-    for (const auto &entry : fs::recursive_directory_iterator(current_path))
-    {
-        // Check if the entry is a regular file
-        if (entry.is_regular_file())
-        {
-            // Construct the relative path of the file
-            fs::path relative_path = fs::relative(entry.path(), current_path);
+	// Recursively iterate over all the files in the current directory and its subdirectories
+	for (const auto &entry : fs::recursive_directory_iterator(current_path))
+	{
+		// Check if the entry is a regular file
+		if (entry.is_regular_file())
+		{
+			// Construct the relative path of the file
+			fs::path relative_path = fs::relative(entry.path(), current_path);
 
-            // Add to buffer
-            string file_path = "./" + relative_path.string();
-            safeAdd(file_path, buffers[buffer_item::buff_1]);
-        }
-    }
+			// Add to buffer
+			string file_path = "./" + relative_path.string();
+			safeAdd(file_path, buffers[buffer_item::buff_1]);
+		}
+	}
 
-    // Add a "done" token to buff_1
-    safeAdd(COMPLETED, buffers[buffer_item::buff_1]);
-    return;
+	// Add a "done" token to buff_1
+	safeAdd(COMPLETED, buffers[buffer_item::buff_1]);
+	return;
 }
-
-
 
 // In this stage, the thread will read filenames from buff1 and filter out files according to the values
 // provided on the command-line for ⟨filesize⟩, ⟨uid⟩, and ⟨gid⟩ as described above. Those files not
@@ -243,88 +241,86 @@ void file_filter_thread()
 	return;
 }
 
-
 // The thread in this stage reads each filename from buff2 and adds the lines in this file to buff3.
 void line_generator_thread()
 {
-    while (1)
-    {
-        string filename = safeRemove(buffers[buffer_item::buff_2]);
+	while (1)
+	{
+		string filename = safeRemove(buffers[buffer_item::buff_2]);
 
-        if (filename == COMPLETED)
-            break;
+		if (filename == COMPLETED)
+			break;
 
-        // Open the file for reading
-        ifstream file(filename);
-        if (file.is_open())
-        {
-            string line;
-            int line_number = 1; // Initialize line number
-            while (getline(file, line))
-            {
-                // Add file name, line number, and line content to buff_3
-                string line_with_info = filename + "(" + to_string(line_number++) + "):" + line;
-                safeAdd(line_with_info, buffers[buffer_item::buff_3]);
-            }
-            file.close();
-        }
-        else
-        {
-            cerr << "Failed to open file: " << filename << endl;
-        }
-    }
+		// Open the file for reading
+		ifstream file(filename);
+		if (file.is_open())
+		{
+			string line;
+			int line_number = 1; // Initialize line number
+			while (getline(file, line))
+			{
+				// Add file name, line number, and line content to buff_3
+				string line_with_info = filename + "(" + to_string(line_number++) + "):" + line;
+				safeAdd(line_with_info, buffers[buffer_item::buff_3]);
+			}
+			file.close();
+		}
+		else
+		{
+			cerr << "Failed to open file: " << filename << endl;
+		}
+	}
 
-    // Add a "done" token to buff_3
-    safeAdd(COMPLETED, buffers[buffer_item::buff_3]);
+	// Add a "done" token to buff_3
+	safeAdd(COMPLETED, buffers[buffer_item::buff_3]);
 
-    return;
+	return;
 }
 
 // In this stage, the thread reads the lines from buff3 and determines if any given one contains ⟨string⟩
 // in it. If it does, it adds the line to buff4.
 void line_filter_thread()
 {
-    while (1)
-    {
-        string data = safeRemove(buffers[buffer_item::buff_3]);
+	while (1)
+	{
+		string data = safeRemove(buffers[buffer_item::buff_3]);
 
-        if (data == COMPLETED)
-            break;
+		if (data == COMPLETED)
+			break;
 
-        // Split the data into file name, line number, and line content
-        size_t pos = data.find('(');
-        if (pos != string::npos && pos + 3 < data.size()) // Assuming ": " follows the line number
-        {
-            // Extract file name
-            string filename = data.substr(0, pos);
+		// Split the data into file name, line number, and line content
+		size_t pos = data.find('(');
+		if (pos != string::npos && pos + 3 < data.size()) // Assuming ": " follows the line number
+		{
+			// Extract file name
+			string filename = data.substr(0, pos);
 
-            // Find the position of '(' to extract line number
-            size_t line_pos = data.find('(');
-            if (line_pos != string::npos)
-            {
-                // Extract line number
-                string line_num_str = data.substr(line_pos + 1, data.find(')', line_pos) - line_pos - 1);
-                int line_num = stoi(line_num_str);
+			// Find the position of '(' to extract line number
+			size_t line_pos = data.find('(');
+			if (line_pos != string::npos)
+			{
+				// Extract line number
+				string line_num_str = data.substr(line_pos + 1, data.find(')', line_pos) - line_pos - 1);
+				int line_num = stoi(line_num_str);
 
-                // Extract line content
-                string line_content = data.substr(data.find(':') + 1); // Assuming ": " follows the line number
+				// Extract line content
+				string line_content = data.substr(data.find(':') + 1); // Assuming ": " follows the line number
 
-                // Check if the line content contains the pattern
-                if (regex_search(line_content, regex(config.pattern)))
-                {
-                    // If it does, add the line to buff_4
-                    safeAdd(filename + "(" + line_num_str + "): " + line_content, buffers[buffer_item::buff_4]);
-                }
-            }
-        }
-    }
+				// Check if the line content contains the pattern
+				if (regex_search(line_content, regex(config.pattern)))
+				{
+					// If it does, add the line to buff_4
+					safeAdd(filename + "(" + line_num_str + "): " + line_content, buffers[buffer_item::buff_4]);
+				}
+			}
+		}
+	}
 
-    // Add a "done" token to buff_4
-    safeAdd(COMPLETED, buffers[buffer_item::buff_4]);
+	// Add a "done" token to buff_4
+	safeAdd(COMPLETED, buffers[buffer_item::buff_4]);
 
-    return;
+	return;
 }
-
 
 // In the final stage, the thread simply removes lines from buff4 and prints them to stdout. Also, you
 // need to figure out when to exit the program. How do you know when you got the last line? Hint:
@@ -333,20 +329,20 @@ void output_thread()
 {
 	int cout_count = 0;
 
-    while (1)
-    {
-        string data = safeRemove(buffers[buffer_item::buff_4]);
+	while (1)
+	{
+		string data = safeRemove(buffers[buffer_item::buff_4]);
 
-        if (data == COMPLETED)
-            break;
+		if (data == COMPLETED)
+			break;
 
-        // Print file name, line number, and line content
-        cout << data << endl;
+		// Print file name, line number, and line content
+		cout << data << endl;
 		cout_count++;
-    }
+	}
 
 	// Print the total number of cout calls
-    cout << "***** You found " << cout_count << " matches *****" << endl;
+	cout << "***** You found " << cout_count << " matches *****" << endl;
 
-    return;
+	return;
 }
