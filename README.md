@@ -104,5 +104,14 @@ user    6m51.884s
 sys     2m7.121s
 ```
 
+### 1000 buffer size
+`./pipgrep 1000 -1  -1 -1 "Date"`
+
+```
+real	7m13.175s
+user	6m49.768s
+sys	    2m9.888s
+```
+
 # Source Code
 https://github.com/Fernando4242/OS-Project-2
