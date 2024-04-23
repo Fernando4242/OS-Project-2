@@ -84,7 +84,7 @@ user    6m18.876s
 sys     0m23.883s
 ```
 
-## 2600+ Files - 1gb+ - over 2m lines
+## 2300+ Files - 1gb+
 
 ### 10 buffer size
 `./pipgrep 100 -1  -1 -1 "Date"`
