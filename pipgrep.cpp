@@ -196,7 +196,7 @@ void filename_acquisition_thread()
         }
     }
 
-    // Send done token
+    // Add a "done" token to buff_1
     safeAdd(COMPLETED, buffers[buffer_item::buff_1]);
     return;
 }
@@ -237,6 +237,7 @@ void file_filter_thread()
 		}
 	}
 
+	// Add a "done" token to buff_2
 	safeAdd(COMPLETED, buffers[buffer_item::buff_2]);
 
 	return;
