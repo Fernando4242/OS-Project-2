@@ -13,7 +13,7 @@ pipgrep: pipgrep.o
 	$(CC) $(CCFLAGS) $(INCLUDES) -c $^ 
 
 # All files to be generated
-all: producer-consumer
+all: pipgrep
 
 # Clean the directory
 clean: 
