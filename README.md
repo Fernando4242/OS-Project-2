@@ -22,6 +22,54 @@ Once the operation is completed, the semaphore mutex is released to allow other 
 
 This keeps our critical section minimal and ensures that only one thread can access a specific buffer at a time. There should not a need for other operations to be protected by a critical section.
 
+```c++
+void safeAdd(string data, Buffer &buffer)
+{
+	/* Reserve an empty slot */
+	sem_wait(&buffer.emptySlots);
+
+	/* Acquire the lock for critical section */
+	sem_wait(&buffer.mutex);
+
+	assert(buffer.data.size() >= 0 && buffer.data.size() <= config.buffer_size);
+
+	/* insert the item at the start of the buffer */
+	buffer.data.insert(buffer.data.begin(), data);
+
+	/* Wake up a consumer */
+	sem_post(&buffer.fullSlots);
+
+	/* Release the lock for critical section */
+	sem_post(&buffer.mutex);
+
+	return;
+}
+
+string safeRemove(Buffer &buffer)
+{
+	/* Reserve a full slot */
+	sem_wait(&buffer.fullSlots);
+
+	/* Acquire the lock for critical section */
+	sem_wait(&buffer.mutex);
+
+	assert(buffer.data.size() >= 0 && buffer.data.size() <= config.buffer_size);
+
+	/* Delete an item at the end of the buffer */
+	string data = buffer.data.back();
+	buffer.data.pop_back();
+	assert(data != "");
+
+	/* Wake up a producer */
+	sem_post(&buffer.emptySlots);
+
+	/* Release the lock for critical section */
+	sem_post(&buffer.mutex);
+
+	return data;
+}
+```
+
 ## Which buffer size gave optimal performance for 30 or more files?
 The optimal buffer size for 30 or more files was 1000. This buffer size provided the best performance in terms of execution time and efficiency when processing a large number of files.
 
