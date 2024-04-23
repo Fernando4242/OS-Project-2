@@ -37,7 +37,7 @@ There are no known bugs in the code. The program has been tested with various in
 
 # Analysis - (VM 4 Cores, 4gb RAM)
 
-## 1 File - 68mb - 1.380m lines
+## 1 File - 68mb - 1.38M lines
 
 ### 10 buffer size
 `./pipgrep 10 59971520  -1 -1 "Date"`
