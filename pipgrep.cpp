@@ -175,7 +175,6 @@ string safeRemove(Buffer &buffer)
 	return data;
 }
 
-// The thread in this stage recurses through the current directory and adds filenames to the first buffer
 void filename_acquisition_thread()
 {
 	// Get the current working directory
@@ -201,9 +200,6 @@ void filename_acquisition_thread()
 	return;
 }
 
-// In this stage, the thread will read filenames from buff1 and filter out files according to the values
-// provided on the command-line for ⟨filesize⟩, ⟨uid⟩, and ⟨gid⟩ as described above. Those files not
-// filtered out are added to buff2
 void file_filter_thread()
 {
 	while (1)
@@ -241,7 +237,6 @@ void file_filter_thread()
 	return;
 }
 
-// The thread in this stage reads each filename from buff2 and adds the lines in this file to buff3.
 void line_generator_thread()
 {
 	while (1)
@@ -277,8 +272,6 @@ void line_generator_thread()
 	return;
 }
 
-// In this stage, the thread reads the lines from buff3 and determines if any given one contains ⟨string⟩
-// in it. If it does, it adds the line to buff4.
 void line_filter_thread()
 {
 	while (1)
@@ -322,9 +315,6 @@ void line_filter_thread()
 	return;
 }
 
-// In the final stage, the thread simply removes lines from buff4 and prints them to stdout. Also, you
-// need to figure out when to exit the program. How do you know when you got the last line? Hint:
-// you can use a “done” token (would not work if you had multiple threads in a stage).
 void output_thread()
 {
 	int cout_count = 0;
