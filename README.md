@@ -88,7 +88,7 @@ There are no known bugs in the code. The program has been tested with various in
 ## 1 File - 68mb - 1.38M lines
 
 ### 10 buffer size
-`./pipgrep 10 59971520  -1 -1 "Date"`
+`./pipegrep 10 59971520  -1 -1 "Date"`
 
 ```
 real    0m15.584s (execution time)
@@ -97,7 +97,7 @@ sys     0m3.442s (systems calls , kernel)
 ```
 
 ### 100 buffer size
-`./pipgrep 100 59971520  -1 -1 "Date"`
+`./pipegrep 100 59971520  -1 -1 "Date"`
 
 ```
 real    0m15.803s
@@ -106,7 +106,7 @@ sys     0m3.319s
 ```
 
 ### 1000 buffer size
-`./pipgrep 1000 59971520  -1 -1 "Date"`
+`./pipegrep 1000 59971520  -1 -1 "Date"`
 
 ```
 real    0m21.454s
@@ -115,7 +115,7 @@ sys     0m5.599s
 ```
 
 ### 10000 buffer size
-`./pipgrep 10000 59971520  -1 -1 "Date"`
+`./pipegrep 10000 59971520  -1 -1 "Date"`
 
 ```
 real    1m34.905s 
@@ -124,7 +124,7 @@ sys     0m22.073s
 ```
 
 ### 100000 buffer size
-`./pipgrep 100000 59971520  -1 -1 "Date"`
+`./pipegrep 100000 59971520  -1 -1 "Date"`
 
 ```
 real    7m2.032s
@@ -135,7 +135,7 @@ sys     0m23.883s
 ## 2300+ Files - 1gb+
 
 ### 10 buffer size
-`./pipgrep 100 -1  -1 -1 "Date"`
+`./pipegrep 100 -1  -1 -1 "Date"`
 
 ```
 real    5m9.394s
@@ -144,7 +144,7 @@ sys     1m18.587s
 ```
 
 ### 100 buffer size
-`./pipgrep 100 -1  -1 -1 "Date"`
+`./pipegrep 100 -1  -1 -1 "Date"`
 
 ```
 real    7m17.654s
@@ -153,7 +153,7 @@ sys     2m7.121s
 ```
 
 ### 1000 buffer size
-`./pipgrep 1000 -1  -1 -1 "Date"`
+`./pipegrep 1000 -1  -1 -1 "Date"`
 
 ```
 real	7m13.175s
