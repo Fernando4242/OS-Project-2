@@ -122,7 +122,7 @@ ParsedArguments parse_args(int argc, char *argv[])
 	}
 	else
 	{
-		cout << "Usage: pipgrep <buffer_size> <file_size> <uid> <gid> <pattern>" << endl;
+		cout << "Usage: pipegrep <buffer_size> <file_size> <uid> <gid> <pattern>" << endl;
 		exit(1);
 	}
 

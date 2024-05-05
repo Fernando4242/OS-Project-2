@@ -3,17 +3,17 @@ CCFLAGS = -g -std=c++17
 INCLUDES =
 # LIBRARIES = -lboost_system -lboost_thread -lpthread -lrt 
 LIBRARIES = -lpthread
-EXECUTABLES = pipgrep
+EXECUTABLES = pipegrep
 
-pipgrep: pipgrep.o
-	$(CC) $(CCFLAGS) $(INCLUDES) -o pipgrep pipgrep.o $(LIBRARIES)
+pipegrep: pipegrep.o
+	$(CC) $(CCFLAGS) $(INCLUDES) -o pipegrep pipegrep.o $(LIBRARIES)
 
 # Rule for generating .o file from .cpp file
 %.o: %.cpp
 	$(CC) $(CCFLAGS) $(INCLUDES) -c $^ 
 
 # All files to be generated
-all: pipgrep
+all: pipegrep
 
 # Clean the directory
 clean: 
